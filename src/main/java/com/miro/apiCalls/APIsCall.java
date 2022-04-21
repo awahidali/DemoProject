@@ -3,13 +3,15 @@ package com.miro.apiCalls;
 import com.aventstack.extentreports.Status;
 import com.miro.common.ExtentTestManager;
 import com.jayway.restassured.response.Response;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.jayway.restassured.RestAssured.expect;
+import org.json.JSONObject;
 import static com.jayway.restassured.RestAssured.given;
 
 public class APIsCall {
+
+    public static String action;
 
     public static boolean createBoard() {
         boolean flag = true;
@@ -29,6 +31,12 @@ public class APIsCall {
                     .log().ifStatusCodeIsEqualTo(201)
                     .extract().response();
 
+            String responseInfo = response.andReturn().asString();
+            JSONObject obj = new JSONObject(responseInfo);
+
+
+            String id=obj.getString("id");
+            action = id.replace("=","%3D");
             ExtentTestManager.getTest().log(Status.PASS, "New blank board is created");
             ExtentTestManager.getTest().log(Status.INFO,response.andReturn().asString());
         } catch (Exception e) {
@@ -44,20 +52,23 @@ public class APIsCall {
         body.put("emails", user);
         body.put("role", "EDITOR");
         body.put("message", "");
+        String operation = "https://miro.com/app/board/"+action+"/share";
+        String requestedURL = operation.replace("25","");
         try {
             Response response = given()
                     .header("authority", "miro.com")
                     .header("accept", "application/json")
                     .header("origin", "https://miro.com")
-                    .header("referer", "https://miro.com/app/board/uXjVO7Rjz8M=/")
+                    .header("referer", "https://miro.com/app/board/"+action)
                     .header("x-csrf-token", "GRwAXkowXTKgxHdwT0wOVq0a")
                     .header("x-user-debug", "3458764523629858225")
+                    .contentType("application/json")
                     .header("cookie", "session=9f30685761f852781e854d940212aa3d; detectedCountry=IN; userLocale=en; X-MR-Browser-ID=626101bc3783e1.86713689; csrf-token=9inl2yjbgkcg4k0cw488csgsog4kkc0; ajs_anonymous_id=%220365dcdc-e0f8-4a66-9676-b04d80ec1c97%22; mr-anon-id-1=%220365dcdc-e0f8-4a66-9676-b04d80ec1c97%22; ajs_user_id=null; ajs_group_id=null; _hjSessionUser_763128=eyJpZCI6IjMyYTY3Mzk2LTI1NjUtNTM4ZC04MGE1LTM3OTJlZWY4MTFjZiIsImNyZWF0ZWQiOjE2NTA1MjQ2MDUwNjUsImV4aXN0aW5nIjpmYWxzZX0=; pageviewCount=1; fbp_tracked=undefined; __pdst=3fe74385c063438aac26a417350c4a9f; _uetsid=23c114e0c14111ec8ce3b9bcd6651b28; _uetvid=23c13790c14111ec989ca7c997f06dac; __hstc=18393318.ee90fc47ba80b6ad48f1deec68c38165.1650524605876.1650524605876.1650524605876.1; hubspotutk=ee90fc47ba80b6ad48f1deec68c38165; __hssrc=1; _gcl_au=1.1.792361349.1650524606; _ga=GA1.2.1502015985.1650524606; _gid=GA1.2.1123552604.1650524606; cb_user_id=null; cb_group_id=null; cb_anonymous_id=%2208a4b4cd-7c62-4e26-b1a3-8a315248a5f0%22; userInfo=%7B%22id%22%3A%223458764523629858225%22%2C%22betaUser%22%3Afalse%2C%22domainGroup%22%3A%22PERSONAL%22%7D; prevUserId=3458764523629858225; isRegistered=1; token=STA5MbfGStTU3pGpN5eg068HZ0iGYEJENGh9iuiFgTWAUDYMjN2i0pVsPmLfcuwg; workspaces=app; _clck=zcqsxp|1|f0t|0; _fbp=fb.1.1650524606806.2023860694; mr-ab=eyJ6b29tX2hvbWVwYWdlX2Jhbm5lcl9SVEJfODI0NTIiOiJzaG93X2Jhbm5lciIsInVzZV9jYXNlX3ZzX3RlbXBsYXRlX2NhdGVnb3J5X1JUQl84MzAzOSI6ImRlZmF1bHQiLCJ1c2VfY2FzZV92c190ZW1wbGF0ZV9wYWdlX1JUQl84MzAzOSI6ImRlZmF1bHQiLCJydGJfODQ5NjJfaG9tZXBhZ2VfbW9iaWxlX2V4cGVyaW1lbnQiOiJnZXRfYXBwIiwicnRiXzg4NzAxX2VkdWNhdGlvbl93aGl0ZWJvYXJkX2V4cGVyaW1lbnQiOiJscC1idWlsZGVyLXBhZ2UtMiJ9; ajs_anonymous_id=%220365dcdc-e0f8-4a66-9676-b04d80ec1c97%22; ajs_user_id=%223458764523629858225%22; NPS_17eee59d_last_seen=1650524610821; NPS_17eee59d_throttle=1650567811345; OptanonConsent=isGpcEnabled=0&datestamp=Thu+Apr+21+2022+12%3A51%3A41+GMT%2B0530+(India+Standard+Time)&version=6.24.0&isIABGlobal=false&hosts=&consentId=2d1721ab-11f4-41b1-bc44-8238ea3cc99f&interactionCount=1&landingPath=NotLandingPage&groups=C0001%3A1%2CC0002%3A0%2CC0003%3A0%2CC0004%3A0&AwaitingReconsent=false; AWSELB=53891BDF1614A34BF7BB8D80766D0256C19DAC6ED749FAB9A4F1C71AF747A72F6BE66E12EAEA01A885D074D7C6DC8B0646E0531EA0F8F1DEA3CD72B8036CBFE1C804B70F2D")
-                    .queryParam("fields","data%7BboardConnection%7BaccountConnection%7Bid%2CorganizationConnection%7Brole%2Clicense%7D%2Cuser%7Bid%7D%7D%7D%7D")
+                    .queryParam("fields","data{boardConnection{accountConnection{id,organizationConnection{role,license},user{id}}}}")
                     .body(body)
                     .log().all()
                     .when()
-                    .post("https://miro.com/api/v1/boards/uXjVO7Rjz8M3D/share")
+                    .post(requestedURL)
                     .then()
                     .log().ifStatusCodeIsEqualTo(200)
                     .extract().response();
