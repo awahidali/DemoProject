@@ -1,1 +1,1 @@
-# MiroDemoProject
+# DemoProject
