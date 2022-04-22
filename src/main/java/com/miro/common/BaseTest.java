@@ -181,6 +181,7 @@ public class BaseTest extends TestListenerAdapter {
              JSONObject user2 = (JSONObject) ((JSONObject) userList.get(1)).get("user");
              username2 = (String)user2.get("username");
              password2 = (String)user2.get("password");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

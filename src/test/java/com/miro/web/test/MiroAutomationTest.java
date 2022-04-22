@@ -30,7 +30,7 @@ public class MiroAutomationTest extends BaseTest {
             AcLogin.enterUsername(driver, username1);
             AcLogin.enterPassword(driver, password1);
             AcLogin.clickSignIn(driver);
-            if (APIsCall.createBoard()) {
+            if (APIsCall.createBoard(driver)) {
                 com.miro.common.ExtentTestManager.getTest().log(Status.PASS, "Board has been created");
             } else {
                 com.miro.common.ExtentTestManager.getTest().log(Status.FAIL, "Board is not created");
@@ -57,7 +57,7 @@ public class MiroAutomationTest extends BaseTest {
             Thread.sleep(2000);
             AcDashboard.clickRenameSave(driver);
             Thread.sleep(2000);
-            APIsCall.invite(username2);
+            APIsCall.invite("abdul.ali@globallogic.com");
             Thread.sleep(2000);
             Common.openNewTab(driver);
             driver.navigate().to(URL);
