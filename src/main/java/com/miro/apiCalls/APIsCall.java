@@ -50,7 +50,7 @@ public class APIsCall {
     }
 
     public static void invite(String user) {
-       
+
         String requestBody = "{\"emails\":[\""+user+"\"],\"role\":\"EDITOR\",\"message\":\"\"}";
         String operation = "https://miro.com/api/v1/boards/"+boardId+"/share";
        //String requestedURL = operation;
@@ -65,14 +65,6 @@ public class APIsCall {
                     .header("x-csrf-token", token)
                     .header("x-user-debug", "3458764523629858225")
                     .contentType("application/json")
-                    .header("Accept-Encoding","gzip, deflate, br")
-                    .header("Connection","keep-alive")
-                    .header("accept-language","en-US,en;q=0.9")
-                    .header("sec-ch-ua","\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"100\", \"Google Chrome\";v=\"100\"")
-                    .header("sec-ch-ua-platform","Windows")
-                    .header("x-client-type","desktop")
-                    .header("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36")
-                    .header("x-client-version","1.14839.0")
                     .header("cookie", cookies)
                     .accept("*/*")
                     .queryParam("fields","data{boardConnection{accountConnection{id,organizationConnection{role,license},user{id}}}}")
@@ -84,8 +76,8 @@ public class APIsCall {
                     .log().ifStatusCodeIsEqualTo(200)
                     .extract().response();
 
-            String s = response.andReturn().asString();
-            System.out.println(s);
+           // String responseBody = response.andReturn().asString();
+          
             ExtentTestManager.getTest().log(Status.PASS, "Invite has been send to the " + user);
             ExtentTestManager.getTest().log(Status.INFO,response.andReturn().asString());
         } catch (Exception e) {
